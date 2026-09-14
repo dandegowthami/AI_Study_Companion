@@ -3,6 +3,9 @@ uvicorn[standard]
 pymongo
 python-jose[cryptography]
 passlib[bcrypt]
+# passlib's bcrypt version-detection code breaks on bcrypt>=4.1 (removed __about__);
+# pin to a known-compatible version rather than letting pip grab the latest.
+bcrypt==4.0.1
 python-multipart
 pypdf2
 chromadb
