@@ -4,7 +4,7 @@ import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Materialtab from '../components/Materialtab';
 import TutorTab from '../components/TutorTab';
-import AnalyticsTab from '../components/Analyticstab';
+import AnalyticsTab from '../components/AnalyticsTab';
 import QuizTab from '../components/QuizTab';
 
 export default function ProjectDetailPage() {
