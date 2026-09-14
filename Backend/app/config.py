@@ -15,5 +15,3 @@ GROQ_MODEL = "openai/gpt-oss-20b"
 
 UPLOAD_DIR = os.getenv("UPLOAD_DIR", "uploads")
 CHROMA_DIR = os.getenv("CHROMA_DIR", "chroma_store")
-
-EMBEDDING_MODEL = "all-MiniLM-L6-v2"

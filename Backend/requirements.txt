@@ -5,7 +5,6 @@ python-jose[cryptography]
 passlib[bcrypt]
 python-multipart
 pypdf2
-sentence-transformers
 chromadb
 groq
 pydantic

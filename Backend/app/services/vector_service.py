@@ -1,9 +1,13 @@
 import chromadb
-from sentence_transformers import SentenceTransformer
-from app.config import CHROMA_DIR, EMBEDDING_MODEL
+from chromadb.utils import embedding_functions
+from app.config import CHROMA_DIR
 
 chroma_client = chromadb.PersistentClient(path=CHROMA_DIR)
-embedder = SentenceTransformer(EMBEDDING_MODEL)
+# Same all-MiniLM-L6-v2 model as sentence-transformers, but served over ONNX
+# Runtime instead of full PyTorch — a fraction of the memory footprint, which
+# matters on memory-constrained free-tier hosts. Model weights are fetched
+# lazily on first call, not at import time.
+embedder = embedding_functions.ONNXMiniLM_L6_V2()
 
 
 def _collection_name(project_id: str) -> str:
@@ -15,7 +19,7 @@ def add_chunks(project_id: str, material_id: str, material_name: str, chunks: li
     collection = chroma_client.get_or_create_collection(_collection_name(project_id))
 
     texts = [c["text"] for c in chunks]
-    embeddings = embedder.encode(texts).tolist()
+    embeddings = [e.tolist() for e in embedder(texts)]
     ids = [f"{material_id}_{i}" for i in range(len(chunks))]
     metadatas = [
         {"material_id": material_id, "material_name": material_name, "page": c["page"]}
@@ -27,7 +31,7 @@ def add_chunks(project_id: str, material_id: str, material_name: str, chunks: li
 
 def search(project_id: str, query: str, top_k: int = 4) -> list[dict]:
     collection = chroma_client.get_or_create_collection(_collection_name(project_id))
-    query_embedding = embedder.encode([query]).tolist()
+    query_embedding = [e.tolist() for e in embedder([query])]
 
     results = collection.query(query_embeddings=query_embedding, n_results=top_k)
 
